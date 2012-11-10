@@ -10,9 +10,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.util.List;
-
-import jdraw.framework.FigureHandle;
 
 /**
  * Represents rectangles in JDraw.
@@ -21,7 +18,7 @@ import jdraw.framework.FigureHandle;
  *
  */
 @SuppressWarnings("serial")
-public class Rect extends AbstractFigure {
+public class Rect extends AbstractRectangularFigure {
 	/**
 	 * Use the java.awt.Rectangle in order to save/reuse code.
 	 */
@@ -36,6 +33,15 @@ public class Rect extends AbstractFigure {
 	 */
 	public Rect(int x, int y, int w, int h) {
 		rectangle = new java.awt.Rectangle(x, y, w, h);
+	}
+	
+	public Rect(Rectangle r){
+		rectangle = new Rectangle(r);
+		this.setBounds(r);
+	}
+	
+	public Rect(Rect other){
+		this(other.getBounds());
 	}
 	
 	/**
@@ -58,40 +64,20 @@ public class Rect extends AbstractFigure {
 		g.drawRect(rectangle.x, rectangle.y, 
 							 rectangle.width, rectangle.height);
 	}
-	
-	@Override
-	public void setBounds(Point origin, Point corner) {
-		rectangle.setFrameFromDiagonal(origin, corner);
-		notifyListeners();
-	}
 
 	@Override
-	public void move(int dx, int dy) {
+	protected void _move(int dx, int dy) {
 		rectangle.setLocation(rectangle.x + dx, rectangle.y + dy);
-		notifyListeners();
 	}
 
 	@Override
-	public boolean contains(int x, int y) {
-		return rectangle.contains(x, y);
+	protected void _setBounds(Point origin, Point corner) {
+		rectangle.setFrameFromDiagonal(origin, corner);
 	}
 
 	@Override
-	public Rectangle getBounds() {
-		return rectangle.getBounds();
-	}
-
-	/**
-	 * Returns a list of 8 handles for this Rectangle.
-	 * @return all handles that are attached to the targeted figure.
-	 * @see jdraw.framework.Figure#getHandles()
-	 */	
-	public List<FigureHandle> getHandles() {
-		/*
-		 * List<FigureHandle> handles = new List<FigureHandle>()
-		 * handles.add(new FigureHandle())
-		 */
-		return null;
+	public Object clone() {
+		return new Rect(this);
 	}
 
 }

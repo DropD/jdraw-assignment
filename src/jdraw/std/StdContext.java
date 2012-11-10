@@ -10,9 +10,11 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 
@@ -24,6 +26,13 @@ import jdraw.framework.DrawModel;
 import jdraw.framework.DrawToolFactory;
 import jdraw.framework.DrawView;
 import jdraw.framework.Figure;
+import jdraw.ricoh.GroupAction;
+import jdraw.ricoh.UngroupAction;
+import jdraw.tools.CopyAction;
+import jdraw.tools.CutAction;
+import jdraw.tools.DecorateBorderAction;
+import jdraw.tools.PasteAction;
+import jdraw.tools.UndecorateBorderAction;
 
 /**
  * Standard implementation of interface DrawContext.
@@ -92,18 +101,30 @@ public class StdContext extends AbstractContext {
 		});
 
 		editMenu.addSeparator();
-		editMenu.add("Cut").setEnabled(false);
-		editMenu.add("Copy").setEnabled(false);
-		editMenu.add("Paste").setEnabled(false);
+		editMenu.add(new JMenuItem(new CutAction(getView())));
+		editMenu.add(new JMenuItem(new CopyAction(getView())));
+		editMenu.add(new JMenuItem(new PasteAction(getView())));
 
 		editMenu.addSeparator();
 		JMenuItem group = new JMenuItem("Group");
-		group.setEnabled(false);
+		group.setAccelerator(KeyStroke.getKeyStroke("control G"));
+		group.setEnabled(true);
 		editMenu.add(group);
+		group.addActionListener(new GroupAction(getView()));
 
 		JMenuItem ungroup = new JMenuItem("Ungroup");
-		ungroup.setEnabled(false);
+		ungroup.setAccelerator(KeyStroke.getKeyStroke("control shift G"));
+		ungroup.setEnabled(true);
 		editMenu.add(ungroup);
+		ungroup.addActionListener(new UngroupAction(getView()));
+		
+		JMenuItem addBorder = new JMenuItem("Add Border");
+		editMenu.add(addBorder);
+		addBorder.addActionListener(new DecorateBorderAction(getView()));
+		
+		JMenuItem rmBorder  = new JMenuItem("Remove Border");
+		editMenu.add(rmBorder);
+		rmBorder.addActionListener(new UndecorateBorderAction(getView()));
 
 		editMenu.addSeparator();
 
@@ -127,9 +148,19 @@ public class StdContext extends AbstractContext {
 		editMenu.add(orderMenu);
 
 		JMenu grid = new JMenu("Grid...");
-		grid.add("Grid 1");
-		grid.add("Grid 2");
-		grid.add("Grid 3");
+		ButtonGroup gridGroup = new ButtonGroup();
+		JRadioButtonMenuItem noGrid = new JRadioButtonMenuItem(new jdraw.tools.NoGrid(getView()));
+		grid.add(noGrid);
+		JRadioButtonMenuItem grid20 = new JRadioButtonMenuItem(new jdraw.tools.Grid(20, getView()));
+		grid.add(grid20);
+		JRadioButtonMenuItem grid50 = new JRadioButtonMenuItem(new jdraw.tools.Grid(50, getView()));
+		grid.add(grid50);
+		JRadioButtonMenuItem snapGrid = new JRadioButtonMenuItem(new jdraw.tools.SnapGrid(getView()));
+		grid.add(snapGrid);
+		gridGroup.add(noGrid);
+		gridGroup.add(grid20);
+		gridGroup.add(grid50);
+		gridGroup.add(snapGrid);
 		editMenu.add(grid);
 		
 		return editMenu;

@@ -24,6 +24,8 @@ public abstract class AbstractFigure implements Figure {
 			l.figureChanged(event);
 		}
 	}
+	
+	protected List<FigureHandle> handles = new LinkedList<FigureHandle>();
 
 	@Override
 	public abstract void draw(Graphics g);
@@ -41,8 +43,8 @@ public abstract class AbstractFigure implements Figure {
 	public abstract Rectangle getBounds();
 
 	@Override
-	public List<FigureHandle> getHandles() {
-		return null;
+	public List<FigureHandle> getHandles(){
+		return handles;
 	}
 
 	@Override
@@ -56,9 +58,7 @@ public abstract class AbstractFigure implements Figure {
 	}
 
 	@Override
-	public Object clone() {
-		return null;
-	}
+	public abstract Object clone();
 	/**
 	 * Reorders the points
 	 */
